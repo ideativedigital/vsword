@@ -55,6 +55,9 @@ class DefaultInitNode implements IInitNode {
             case 'span':
                 return new RCompositeNode();
                 break;
+            case 'nbsp':
+                return new WhiteSpaceNode();
+                break;
             case 'i':
                 $r = new RCompositeNode();
                 $r->addTextStyle(new ItalicStyleNode());
