@@ -11,7 +11,7 @@ if (!defined('ENT_XML1')) {
 
 /**
  *  Class VsWord.
- * The main class is responsible for creating the document. 
+ * The main class is responsible for creating the document.
  *
  *  @version 1.0.1
  *  @author v.raskin
@@ -21,7 +21,7 @@ class VsWord {
 
     /**
      *
-     * @var array 
+     * @var array
      */
     protected $structure;
 
@@ -42,20 +42,20 @@ class VsWord {
 
     /**
      *
-     * @var AttachVsWord[] 
+     * @var AttachVsWord[]
      */
     protected $stackAttach = array();
 
     /**
-     * 
-     * @param string $from 
+     *
+     * @param string $from
      * @throws Exception
      */
-    public function __construct($from = NULL) {
+    public function __construct($from = NULL, $themeFontLang = null) {
         if (!class_exists('ZipArchive')) {
             throw new Exception("Class \"ZipArchive\" not found!");
         }
-        $this->structure = $this->getBaseStructureDocClasses();
+        $this->structure = $this->getBaseStructureDocClasses($themeFontLang);
     }
 
     /**
@@ -93,7 +93,7 @@ class VsWord {
 
     /**
      * Snap a picture file to the document.
-     * @param string $fileName 
+     * @param string $fileName
      * @return AttachVsWord
      * @throws Exception
      */
@@ -105,17 +105,17 @@ class VsWord {
         $this->stackAttach[] = new AttachVsWord($key, $fileName, $type);
         return $this->stackAttach[sizeof($this->stackAttach) - 1];
     }
-    
+
     /**
-     * 
+     *
      * @param string $hyperLink
-     * @return string 
+     * @return string
      */
     public function getAttachHyperLink($hyperLink) {
         list($target, $type, $key, $external) = $this->getRels()->registerHyperLink($hyperLink);
         return $key;
     }
-    
+
 
     /**
      * No implementation.
@@ -146,7 +146,7 @@ class VsWord {
     }
 
     /**
-     * 
+     *
      * @param ZipArchive $zip
      * @param array $list
      * @param type $dirContext
@@ -164,10 +164,11 @@ class VsWord {
     }
 
     /**
-     * 
+     *
+     * @var string doc locale
      * @return array
      */
-    protected function getBaseStructureDocClasses() {
+    protected function getBaseStructureDocClasses($themeFontLang = null) {
         return array(
             new ContentTypesStructureDocFile(),
             '_rels' => array(
@@ -182,7 +183,7 @@ class VsWord {
                 ),
                 $this->getDocument(),
                 new WordDirFontTableStructureDocFile(),
-                new WordDirSettingsStructureDocFile(),
+                new WordDirSettingsStructureDocFile($themeFontLang),
                 $this->getStyle(),
                 new WordDirStylesWithEffectsStructureDocFile(),
                 new WordDirWebSettingsStructureDocFile(),
